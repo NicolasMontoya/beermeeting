@@ -21,7 +21,6 @@ class Database:
         else:
             raise Exception("This class is a singleton!")
 
-
     def __enter__(self):
         return self
 
