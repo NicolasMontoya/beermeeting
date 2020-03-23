@@ -1,5 +1,5 @@
-from beermetting.server import BeerServer
-from beermetting.request import EchoRequestHandler
+from beermeeting.server import BeerServer
+from beermeeting.request import EchoRequestHandler
 import config
 import logging
 

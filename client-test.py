@@ -1,4 +1,4 @@
-from beermetting.client import  Client
+from beermeeting.client import  Client
 
 
 if __name__ == "__main__":
