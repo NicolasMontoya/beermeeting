@@ -1,4 +1,4 @@
-from beermetting.database import Database
+from beermeeting.database import Database
 
 
 class User:

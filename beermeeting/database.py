@@ -2,6 +2,13 @@ import cx_Oracle
 
 
 class Database:
+    """
+    Clase para gestionar la conexión a la base de datos mediante el driver cx_oracle
+
+    Methods
+    -------
+    get_instance(username='', password='', dsn='', encoding='UTF-8')
+    """
 
     __instance = None
 

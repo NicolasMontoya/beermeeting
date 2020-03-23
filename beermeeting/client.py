@@ -2,8 +2,8 @@ import pickle
 import socket
 import time
 import threading
-from beermetting.packet import Packet
-from beermetting.user import User
+from beermeeting.packet import Packet
+from beermeeting.user import User
 from socketserver import ThreadingUDPServer, BaseRequestHandler
 
 

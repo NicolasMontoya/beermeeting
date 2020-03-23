@@ -1,7 +1,7 @@
 import socketserver
-from beermetting.packet import Packet
-from beermetting.user import User
-from beermetting.user import UserDao
+from beermeeting.packet import Packet
+from beermeeting.user import User
+from beermeeting.user import UserDao
 import cx_Oracle
 import pickle
 
