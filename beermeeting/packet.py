@@ -8,7 +8,7 @@ class Packet:
     SEND_DATA = 6
 
     OP_GET = 'GET'
-    OP_BROADCAST = 'GET'
+    OP_BROADCAST = 'BROADCAST'
 
     @staticmethod
     def get_client_packet(packet_type, msg=None, usr=None):
