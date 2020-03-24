@@ -17,9 +17,11 @@ class Client:
 
     Methods
     -------
-    read_messages(conn: SocketConnection, stop_thread: boolean)
+    read_packets_thread(conn: SocketConnection, stop_thread: boolean)
         Función que permite leer los mensajes de iterativa. Puede usarse con hilos
-    read_broadcast(conn)
+    read
+        lectura de paquete
+    read_packet(conn)
         Permite leer mensajes enviados por el servidor TCP
     open_connection()
         Abre la conexión con el socket TCP
@@ -68,7 +70,8 @@ class Client:
 
         # Inicializar variables para Threads - Sockets
         self.stop_threads = False
-        self.read_thread = threading.Thread(target=self.read_messages, args=(self.socket, lambda: self.stop_threads))
+        self.read_thread = threading.Thread(target=self.read_packets_thread,
+                                            args=(lambda: self.stop_threads,))
         self.udp_server_thread = None
         self.udp_server = None
 
@@ -83,7 +86,7 @@ class Client:
         # Usuarios en el servidor
         self.active_users = []
 
-    def read_messages(self, conn, stop_thread):
+    def read_packets_thread(self, stop_thread):
         """
         Función que permite leer de manera iterativa los mensajes entrantes al clientes desde el servidor principal.
         Mediante esta función y el uso de hilo el cliente tiene en tiempo real los mensajes del servidor
@@ -91,43 +94,51 @@ class Client:
 
         Parameters
         ----------
-        conn
-            Conexión TCP resultante de socket
         stop_thread
             Booleano que sirve para parar el bucle infinito
 
         """
         while True:
-            self.read_broadcast(conn)
+            self.read_packet()
             if stop_thread():
                 break
 
     # TODO: Mejorar el sistema de recepción para capturar el error de usuario inexistente
-    def read_broadcast(self, conn):
+    def read_packet(self):
         """
         Función que permite leer los paquetes de tipo SERVER_REGISTER, SERVER_RESPONSE y SERVER_OPERATION provenientes
         del servidor. Este imprime en consola los datos de interes para el cliente.
 
-        Parameters
-        ----------
-        conn
-             Conexión TCP resultante de socket
-
         """
-        data = conn.recv(1024)
-        p: Packet = pickle.loads(data)
+
+        data = self.socket.recv(1024)
+        p = pickle.loads(data)
+        print(self.process_packet(p))
+
+    def process_packet(self, p):
         if p.packet_type == Packet.SERVER_REGISTER:
             self.user = p.usr
+            return f"Ingreso con {self.user.username}"
         elif p.packet_type == Packet.SERVER_RESPONSE:
-            print(f"\n\r Mensaje público >>	{p.info}")
+            return f"\n\r Mensaje público >>	{p.info}"
         elif p.packet_type == Packet.SERVER_OPERATION:
             if p.op == Packet.OP_GET:
                 self.active_users = p.info
-                print(p.info)
+                return p.info
         elif p.packet_type == Packet.SERVER_ERROR:
-            print(p.info)
+            raise Exception(f"Error {p.info}")
         else:
-            print(p.info)
+            return p.info
+
+    def read(self):
+        """
+        Función que permite leer los paquetes de tipo SERVER_REGISTER, SERVER_RESPONSE y SERVER_OPERATION provenientes
+        del servidor. Este imprime en consola los datos de interes para el cliente.
+
+        """
+
+        data = self.socket.recv(1024)
+        return pickle.loads(data)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop_threads = True
@@ -237,6 +248,8 @@ class Client:
         Abre el servidor UDP del cliente
 
         """
+        if self.udp_server is None:
+            self.create_udp_server()
         self.udp_server_thread.start()
 
     def close_udp_server(self):
@@ -245,9 +258,9 @@ class Client:
 
         """
         self.user = None
-        self.udp_server_thread.join()
         self.udp_server.shutdown()
         self.udp_server.server_close()
+        self.udp_server_thread.join()
 
     def send_message_manual(self, info):
         """
