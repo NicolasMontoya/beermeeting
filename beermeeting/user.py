@@ -105,7 +105,7 @@ class UserDao:
                         ", PORT = :port WHERE USERNAME = :username"
 
     def __init__(self):
-        self.__database: Database = Database.get_instance()
+        self.__database = Database.get_instance()
 
     def get_users(self) -> [User]:
         """

@@ -53,6 +53,7 @@ class Client:
         Inicialización del cliente para uso por consola
     """
 
+    # TODO: Debe agregarse funcionalidad para incluir usuarios activos de manera automática.
     def __init__(self, host="localhost", port=9999):
         """
         Constructor del modulo
@@ -134,6 +135,7 @@ class Client:
         """
         Función que permite leer los paquetes de tipo SERVER_REGISTER, SERVER_RESPONSE y SERVER_OPERATION provenientes
         del servidor. Este imprime en consola los datos de interes para el cliente.
+
 
         """
 
